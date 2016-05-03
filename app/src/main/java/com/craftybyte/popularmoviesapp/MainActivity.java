@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HashMap<String,String>> mMovieDetailsFinalList = null;
+    private MovieDataAdapter movieDataAdapter = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         MoviesFetchTask moviesFetchTask = new MoviesFetchTask(this);
         moviesFetchTask.execute();
 
-        MovieDataAdapter movieDataAdapter = new MovieDataAdapter(this,0,  mMovieDetailsFinalList);
+        movieDataAdapter = new MovieDataAdapter(this,0,  mMovieDetailsFinalList);
         GridView gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(movieDataAdapter);
     }
@@ -61,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        MoviesFetchTask moviesFetchTask = new MoviesFetchTask(this);
-        moviesFetchTask.execute();
     }
 
     class MoviesFetchTask extends AsyncTask<Void,Void,List<HashMap<String,String>>> {
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             String movieJsonDetail = null;
 
             //TODO:INSERT THE API KEY HERE
-            final String API_KEY ="";
+            final String API_KEY ="8525c89e81766b6f9fcbcfa49d4aa9b4";
 
             Uri.Builder movieDicoverUri = Uri.parse(BASE_URI_MOVIES)
                     .buildUpon()
@@ -211,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
             super.onPostExecute(hashMaps);
+
             if(hashMaps == null || hashMaps.size() == 0)
             {
                 Log.d(LOG_TAG,"List is empty | onPostExecute");
@@ -218,12 +218,15 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
+
                 Log.d(LOG_TAG,"List not empty | onPostExecute");
                 if(mMovieDetailsFinalList != null || mMovieDetailsFinalList.size() > 0)
                     mMovieDetailsFinalList.clear();
                 mMovieDetailsFinalList.addAll(hashMaps);
                 Log.d(LOG_TAG,"Done with | onPostExecute | Copied to mMovieDetailsFinalList ");
                 Log.d(LOG_TAG,"Value is Title of 1: "+mMovieDetailsFinalList.get(0).get(PARSE_TITLE).toString());
+
+                movieDataAdapter.updateData(mMovieDetailsFinalList);
             }
         }
     }
