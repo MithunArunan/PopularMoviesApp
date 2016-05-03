@@ -15,7 +15,5 @@ public class DetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         HashMap<String,String> hashMap = (HashMap) intent.getSerializableExtra("MovieDetailData");
-
-
     }
 }

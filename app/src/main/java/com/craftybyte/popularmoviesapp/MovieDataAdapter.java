@@ -72,13 +72,13 @@ public class MovieDataAdapter extends ArrayAdapter<HashMap<String,String>> {
 
     class ViewHolder {
         ImageView imageView;
-        TextView textView1;
-        RatingBar ratingBar;
+       // TextView textView1;
+       // RatingBar ratingBar;
         ViewHolder(View v)
         {
             imageView = (ImageView) v.findViewById(R.id.movieImageView1);
-            textView1 = (TextView) v.findViewById(R.id.movieTitle);
-            ratingBar = (RatingBar) v.findViewById(R.id.movieRatingView);
+        //    textView1 = (TextView) v.findViewById(R.id.movieTitle);
+        //    ratingBar = (RatingBar) v.findViewById(R.id.movieRatingView);
         }
     }
 
@@ -115,8 +115,8 @@ public class MovieDataAdapter extends ArrayAdapter<HashMap<String,String>> {
             Log.d(getClass().toString(), "AdapterClass" + mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));
             Log.d(getClass().toString(), "Image Complete path" + poster_complete_path);
             Log.d(getClass().toString(), "Rating bar value" + mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_VOTE_AVERAGE));
-            viewHolder.textView1.setText(mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));
-            viewHolder.ratingBar.setRating(Float.parseFloat(String.valueOf(mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_VOTE_AVERAGE))));
+         //   viewHolder.textView1.setText(mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));
+         //   viewHolder.ratingBar.setRating(Float.parseFloat(String.valueOf(mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_VOTE_AVERAGE))));
             Picasso.with(context).load(poster_complete_path).into(viewHolder.imageView);
 
         }
