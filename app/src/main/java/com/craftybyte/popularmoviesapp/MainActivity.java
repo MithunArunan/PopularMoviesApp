@@ -1,13 +1,18 @@
 package com.craftybyte.popularmoviesapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -23,7 +28,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
+
+import static com.craftybyte.popularmoviesapp.R.string.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,37 +40,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main );
 
-        duplicateData();
-        MoviesFetchTask moviesFetchTask = new MoviesFetchTask(this);
-        moviesFetchTask.execute();
+        //To set up action bar using android support library!
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
 
+        updateMovieData();
         movieDataAdapter = new MovieDataAdapter(this,0,  mMovieDetailsFinalList);
         GridView gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(movieDataAdapter);
     }
 
-    private void duplicateData()
-    {
-        mMovieDetailsFinalList = new ArrayList<HashMap<String, String>>();
-        for(int i=0;i<5;i++)
-        {
-            HashMap<String,String> hashMap = new HashMap<>();
-            hashMap.put("overview",i+"th overview");
-            hashMap.put("backdrop_path","/6bCplVkhowCjTHXWv49UjRPn0eK.jpg");
-            hashMap.put("poster_path","/6bCplVkhowCjTHXWv49UjRPn0eK.jpg");
-            hashMap.put("vote_average","5");
-            hashMap.put("title",i+"th Title");
-            hashMap.put("release_date","12/14/12");
-            mMovieDetailsFinalList.add(hashMap);
-
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.app_menu,menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.app_settings: //Action for setting button.
+                //Open the settings activity!
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            default:
+            return super.onOptionsItemSelected(item);
+        }
+        return false;
+    }
+
+    private void updateMovieData()
+    {
+        MoviesFetchTask moviesFetchTask = new MoviesFetchTask(this);
+        SharedPreferences sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String sort_by_data = sharedPreferences.getString(getString(pref_key_sort_by),"popularity.desc");
+        moviesFetchTask.execute(sort_by_data);
+
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
     }
 
-    class MoviesFetchTask extends AsyncTask<Void,Void,List<HashMap<String,String>>> {
+    class MoviesFetchTask extends AsyncTask<String,Void,List<HashMap<String,String>>> {
 
         private GridView gridView = null;
         private Context context = null ;
@@ -133,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Makes a HTTP request and get the movies list data from themoviesdb.org...
         @Override
-        protected List<HashMap<String, String>> doInBackground(Void... voids) {
+        protected List<HashMap<String, String>> doInBackground(String... sortBy) {
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
             //HTTP request to fetch JSON data as String
@@ -146,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
             Uri.Builder movieDicoverUri = Uri.parse(BASE_URI_MOVIES)
                     .buildUpon()
+                    .appendQueryParameter("sort_by",sortBy[0])
                     .appendQueryParameter("api_key", API_KEY);
             try {
                 movieJsonDetail = getJSONData(new URL(movieDicoverUri.toString()));
@@ -218,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
-
                 Log.d(LOG_TAG,"List not empty | onPostExecute");
                 if(mMovieDetailsFinalList != null || mMovieDetailsFinalList.size() > 0)
                     mMovieDetailsFinalList.clear();
@@ -229,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 movieDataAdapter.updateData(mMovieDetailsFinalList);
             }
         }
+
     }
 
 
