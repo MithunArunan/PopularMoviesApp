@@ -43,6 +43,8 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref_general);
         //TODO: add preference change listerners!
 
+
+
     }
 
 
