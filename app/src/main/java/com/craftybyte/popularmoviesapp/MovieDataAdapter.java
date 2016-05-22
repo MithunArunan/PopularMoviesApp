@@ -112,7 +112,6 @@ public class MovieDataAdapter extends ArrayAdapter<HashMap<String,String>> {
             String poster_base_path = "http://image.tmdb.org/t/p/w500/";
             String poster_complete_path = poster_base_path + poster_path;
             Log.d(getClass().toString(), "AdapterClass" + mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));
-            Log.d(getClass().toString(), "AdapterClass" + mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));
             Log.d(getClass().toString(), "Image Complete path" + poster_complete_path);
             Log.d(getClass().toString(), "Rating bar value" + mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_VOTE_AVERAGE));
          //   viewHolder.textView1.setText(mMovieDetailsList.get(position).get(MovieDataAdapter.PARSE_TITLE));

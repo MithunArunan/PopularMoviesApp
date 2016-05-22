@@ -41,12 +41,9 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
-        //TODO: add preference change listerners!
-
 
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

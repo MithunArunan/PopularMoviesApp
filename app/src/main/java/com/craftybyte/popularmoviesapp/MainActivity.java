@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HashMap<String,String>> mMovieDetailsFinalList = null;
     private MovieDataAdapter movieDataAdapter = null;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = null;
+    private SharedPreferences sharedPreferences = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +46,29 @@ public class MainActivity extends AppCompatActivity {
 
         //To set up action bar using android support library!
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                if(key.equals(R.string.pref_key_sort_by))
+                    updateMovieData();
+            }
+        };
+
+        sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
 
         updateMovieData();
         movieDataAdapter = new MovieDataAdapter(this,0,  mMovieDetailsFinalList);
         GridView gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(movieDataAdapter);
+
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,11 +83,15 @@ public class MainActivity extends AppCompatActivity {
             case R.id.app_settings: //Action for setting button.
                 //Open the settings activity!
                 startActivity(new Intent(this, SettingsActivity.class));
-                break;
+                sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+                return true;
+            case R.id.app_refresh: //Action for refresh button.
+                //fetch the movie details again
+                updateMovieData();
+                return true;
             default:
             return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
     private void updateMovieData()
@@ -76,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String sort_by_data = sharedPreferences.getString(getString(pref_key_sort_by),"popularity.desc");
         moviesFetchTask.execute(sort_by_data);
-
     }
 
     @Override
@@ -162,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             String movieJsonDetail = null;
 
             //TODO:INSERT THE API KEY HERE
-            final String API_KEY ="8525c89e81766b6f9fcbcfa49d4aa9b4";
+            final String API_KEY ="";
 
             Uri.Builder movieDicoverUri = Uri.parse(BASE_URI_MOVIES)
                     .buildUpon()
