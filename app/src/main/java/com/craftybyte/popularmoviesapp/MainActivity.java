@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             String movieJsonDetail = null;
 
             //TODO:INSERT THE API KEY HERE
-            final String API_KEY ="";
+            final String API_KEY ="8525c89e81766b6f9fcbcfa49d4aa9b4";
 
             Uri.Builder movieDicoverUri = Uri.parse(BASE_URI_MOVIES)
                     .buildUpon()

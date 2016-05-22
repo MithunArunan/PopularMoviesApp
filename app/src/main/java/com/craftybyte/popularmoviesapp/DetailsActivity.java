@@ -45,6 +45,11 @@ public class DetailsActivity extends AppCompatActivity {
         String poster_complete_path = poster_base_path + poster_path;
         Picasso.with(this).load(poster_complete_path).into(imageView);
 
+        //Release Date
+        String releaseDate = mHashMap.get(MovieDataAdapter.PARSE_RELEASE_DATE);
+        TextView releaseView =(TextView) findViewById(R.id.movieDetailReleaseId);
+        releaseView.setText("Release Date: "+releaseDate);
+
         TextView synopsisView = (TextView) findViewById(R.id.movieDetailSynopsisId);
         synopsisView.setText(mHashMap.get(MovieDataAdapter.PARSE_OVERVIEW));
 
